@@ -99,7 +99,7 @@ Look at the console output that accompanies the graphical output (or use -t for 
 
 As in Pacman, positions are represented by `(x,y)` Cartesian coordinates and any arrays are indexed by `[x][y]`, with `'north'` being the direction of increasing y, etc. By default, most transitions will receive a reward of zero, though you can change this with the living reward option (`-r`).
 
-### Question 1 (6 points): Value Iteration
+### Exercise/Question 1 (6 points): Value Iteration
 
 Write a value iteration agent in `ValueIterationAgent`, which has been partially specified for you in `value_iteration_agents.py`. Your value iteration agent is an offline planner, not a reinforcement learning agent, and so the relevant training option is the number of iterations of value iteration it should run (option `-i`) in its initial planning phase. `ValueIterationAgent` takes an MDP on construction and runs value iteration for the specified number of iterations before the constructor returns.
 
@@ -137,7 +137,7 @@ _Hint:_ On the default `book_grid`, running value iteration for 5 iterations sho
 _Grading:_ Your value iteration agent will be graded on a new grid. We will check your values, Q-values, and policies after fixed numbers of iterations and at convergence (e.g. after 100 iterations).
 
 
-### Question 2 (1 point): Bridge Crossing Analysis
+### Exercise/Question 2 (1 point): Bridge Crossing Analysis
 
 `BridgeGrid` is a grid world map with the a low-reward terminal state and a high-reward terminal state separated by a narrow "bridge", on either side of which is a chasm of high negative reward. The agent starts near the low-reward state. With the default discount of 0.9 and the default noise of 0.2, the optimal policy does not cross the bridge. Change only ONE of the discount and noise parameters so that the optimal policy causes the agent to attempt to cross the bridge. Put your answer in `question2()` of `analysis.py`. (Noise refers to how often an agent ends up in an unintended successor state when they perform an action.) The default corresponds to:
 
@@ -150,7 +150,7 @@ _Grading:_ We will check that you only changed one of the given parameters, and 
 `python autograder.py -q q2`
 
 
-### Question 3 (5 points): Policies
+### Exercise/Question 3 (5 points): Policies
 
 Consider the `discount_grid` layout, shown below. This grid has two terminal states with positive payoff (in the middle row), a close exit with payoff +1 and a distant exit with payoff +10. The bottom row of the grid consists of terminal states with negative payoff (shown in red); each state in this "cliff" region has payoff -10. The starting state is the yellow square. We distinguish between two types of paths: (1) paths that "risk the cliff" and travel near the bottom row of the grid; these paths are shorter but risk earning a large negative payoff, and are represented by the red arrow in the figure below. (2) paths that "avoid the cliff" and travel along the top edge of the grid. These paths are longer but are less likely to incur huge negative payoffs. These paths are represented by the green arrow in the figure below.
 
@@ -179,7 +179,17 @@ _Note:_ On some machines you may not see an arrow. In this case, press a button 
 _Grading:_ We will check that the desired policy is returned in each case.
 
 
-### Question 4 (5 points): Q-Learning
+### Optional exercise - Questions 4 and 5
+
+Following up on Exercise 1, `AsynchronousValueIterationAgent` implements a variant of value iteration that updates only one state per iteration, cycling through the state list, instead of updating all states at once. This makes the updates in-place and cheaper per step, sometimes allowing the algorithm to propagate value improvements faster. `PrioritizedSweepingValueIterationAgent` goes further by updating states in the order of their importance, measured by how large their Bellman error is, keeping a priority queue of states that are expected to change the most and updating those first, making value iteration much more efficient. In contrast, normal value iteration performs a full sweep over all states on every iteration, which is simpler but computationally more expensive and unaware of which states actually need updates.
+
+Read more about the previous mentioned variations of the value iteration algorithm and implement the missing logic of the `run_value_iteration` method in both `AsynchronousValueIterationAgent` and `PrioritizedSweepingValueIterationAgent`.
+
+To check your implementations, run the autograder with `python autograder.py -q q4` and `python autograder.py -q q5`, respectively.
+
+
+
+### Exercise 4 - Question 6 (5 points): Q-Learning
 
 Note that your value iteration agent does not actually learn from experience. Rather, it ponders its MDP model to arrive at a complete policy before ever interacting with a real environment. When it does interact with the environment, it simply follows the precomputed policy (e.g. it becomes a reflex agent). This distinction may be subtle in a simulated environment like a Gridword, but it's very important in the real world, where the real MDP is not available.
 
@@ -199,10 +209,10 @@ Recall that `-k` will control the number of episodes your agent gets to learn. W
 
 _Grading:_ We will run your Q-learning agent and check that it learns the same Q-values and policy as our reference implementation when each is presented with the same set of examples. To grade your implementation, run the autograder:
 
-`python autograder.py -q q4`
+`python autograder.py -q q6`
 
 
-### Question 5 (3 points): Epsilon Greedy
+### Exercise 5 - Question 7 (3 points): Epsilon Greedy
 
 Complete your Q-learning agent by implementing epsilon-greedy action selection in `get_action`, meaning it chooses random actions an epsilon fraction of the time, and follows its current best Q-values otherwise. Note that choosing a random action may result in choosing the best action - that is, you should not choose a random sub-optimal action, but rather any random legal action.
 
@@ -214,7 +224,7 @@ You can choose an element from a list uniformly at random by calling the `random
 
 To test your implementation, run the autograder:
 
-`python autograder.py -q q5`
+`python autograder.py -q q7`
 
 With no additional code, you should now be able to run a Q-learning crawler robot:
 
@@ -225,23 +235,23 @@ If this doesn't work, you've probably written some code too specific to the `Gri
 This will invoke the crawling robot from class using your Q-learner. Play around with the various learning parameters to see how they affect the agent's policies and actions. Note that the step delay is a parameter of the simulation, whereas the learning rate and epsilon are parameters of your learning algorithm, and the discount factor is a property of the environment.
 
 
-### Question 6 (1 point): Bridge Crossing Revisited
+### Exercise 6 - Question 8 (1 point): Bridge Crossing Revisited
 
 First, train a completely random Q-learner with the default learning rate on the noiseless `BridgeGrid` for 50 episodes and observe whether it finds the optimal policy.
 
 `python gridworld.py -a q -k 50 -n 0 -g bridge_grid -e 1`
 
-Now try the same experiment with an epsilon of 0. Is there an epsilon and a learning rate for which it is highly likely (greater than 99%) that the optimal policy will be learned after 50 iterations? `question6()` in `analysis.py` should return `EITHER` a 2-item tuple of `(epsilon, learning rate)` `OR` the string `'NOT POSSIBLE'` if there is none. Epsilon is controlled by `-e`, learning rate by `-l`.
+Now try the same experiment with an epsilon of 0. Is there an epsilon and a learning rate for which it is highly likely (greater than 99%) that the optimal policy will be learned after 50 iterations? `question8()` in `analysis.py` should return `EITHER` a 2-item tuple of `(epsilon, learning rate)` `OR` the string `'NOT POSSIBLE'` if there is none. Epsilon is controlled by `-e`, learning rate by `-l`.
 
 _Note:_ Your response should be not depend on the exact tie-breaking mechanism used to choose actions. This means your answer should be correct even if for instance we rotated the entire bridge grid world 90 degrees.
 
 To grade your answer, run the autograder:
 
-`python autograder.py -q q6`
+`python autograder.py -q q8`
 
 
 
-### Question 7 (1 point): Q-Learning and Pacman
+### Exercise 7 - Question 9 (1 point): Q-Learning and Pacman
 
 Time to play some Pacman! Pacman will play games in two phases. In the first phase, _training_, Pacman will begin to learn about the values of positions and actions. Because it takes a very long time to learn accurate Q-values even for tiny grids, Pacman's training games run in quiet mode by default, with no GUI (or console) display. Once Pacman's training is complete, he will enter _testing_ mode. When testing, Pacman's `self.epsilon` and `self.alpha` will be set to 0.0, effectively stopping Q-learning and disabling exploration, in order to allow Pacman to exploit his learned policy. Test games are shown in the GUI by default. Without any code changes you should be able to run Q-learning Pacman for very tiny grids as follows:
 
@@ -252,7 +262,7 @@ _Hint:_ If your `QLearningAgent` works for `gridworld.py` and `crawler.py` but d
 
 _Note:_ To grade your answer, run:
 
-`python autograder.py -q q7`
+`python autograder.py -q q9`
 
 _Note:_ If you want to experiment with learning parameters, you can use the option `-a`, for example `-a epsilon=0.1,alpha=0.3,gamma=0.7`. These values will then be accessible as `self.epsilon`, `self.gamma` and `self.alpha` inside the agent.
 
@@ -274,7 +284,7 @@ Pacman fails to win on larger layouts because each board configuration is a sepa
 
 
 
-### Question 8 (3 points): Approximate Q-Learning
+### Exercise 8 - Question 10 (3 points): Approximate Q-Learning
 
 Implement an approximate Q-learning agent that learns weights for features of states, where many states might share the same features. Write your implementation in `ApproximateQAgent` class in `q_learning_agents.py`, which is a subclass of `PacmanQAgent`.
 
@@ -309,7 +319,7 @@ If you have no errors, your approximate Q-learning agent should win almost every
 
 _Grading:_ We will run your approximate Q-learning agent and check that it learns the same Q-values and feature weights as our reference implementation when each is presented with the same set of examples. To grade your implementation, run the autograder:
 
-`python autograder.py -q q8`
+`python autograder.py -q q10`
 
 _Congratulations! You have a learning Pacman agent!_
 
